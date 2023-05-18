@@ -43,16 +43,24 @@ export class View {
     this.searchList.innerHTML = "";
   }
 
+  loadReposData(id) {
+    const urls = new Map([
+      ["Name", `${id.name}`],
+      ["Owner", `${id.owner.login}`],
+      ["Stars", `${id.stargazers_count}`],
+    ]);
+    return urls;
+  }
+
   createCard(id) {
     const card = this.createElement("li", "cards__item");
-    this.api.loadReposData(id).then((res) => {
-      res.forEach((key, value) => {
+    this.loadReposData(id)
+      .forEach((key, value) => {
         card.insertAdjacentHTML(
           "beforeend",
           `<div class= "card__info">${value}:${key}</div>`
         );
       });
-    });
     card.addEventListener("click", () => card.remove());
     this.cardList.append(card);
   }
