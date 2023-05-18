@@ -1,8 +1,7 @@
+import {loadRepos} from "./api.js"
 export class Search {
-  constructor(view, api) {
+  constructor(view) {
     this.view = view;
-    this.api = api;
-
     this.view.searchInput.addEventListener(
       "keyup",
       this.debounce(this.searchRepo.bind(this), 800)
@@ -13,7 +12,7 @@ export class Search {
     const valueRepos = this.view.searchInput.value;
     if (valueRepos) {
       this.clearRepos();
-      this.api.loadRepos(valueRepos).then((res) => {
+      loadRepos(valueRepos).then((res) => {
         try {
           res.json().then((res) => {
             res.items.forEach((repo) => this.view.createRepo(repo));

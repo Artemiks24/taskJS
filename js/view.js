@@ -1,7 +1,7 @@
 export class View {
-  constructor(api) {
+  constructor() {
     this.container = document.querySelector(".container");
-    this.api = api;
+  
 
     this.title = this.createElement("h1", "title");
     this.title.textContent = "Введите данные для поиска репозиториев";
