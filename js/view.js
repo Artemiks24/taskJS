@@ -1,57 +1,59 @@
 export class View {
-    constructor (api) {
-        this.main = document.querySelector('.main');
-        this.api = api;
+  constructor(api) {
+    this.container = document.querySelector(".container");
+    this.api = api;
 
-        this.title = this.createElement('h1','title');
-        this.title.textContent = 'Введите данные для поиска репозиториев';
+    this.title = this.createElement("h1", "title");
+    this.title.textContent = "Введите данные для поиска репозиториев";
 
-        this.searchLine = this.createElement('div', 'search');
-        this.searchInput = this.createElement('input', 'search__input');
-        this.searchCounter = this.createElement('span');
-        this.searchLine.append(this.searchInput);
-        this.searchLine.append(this.searchCounter);
+    this.search = this.createElement("div", "search");
+    this.searchInput = this.createElement("input", "search__input");
+    this.search.append(this.searchInput);
+    this.searchList = this.createElement("ul", "search__list");
+    this.search.append(this.searchList);
 
-        
-        this.repos = this.createElement('div', 'repos');
-        this.reposList = this.createElement('ul', 'repos__list');
-        this.repos.append(this.reposList);
+    this.cardList = this.createElement("ul", "cards");
 
-        this.wrapper = this.createElement('div', 'wrapper');
-        this.wrapper.append(this.repos);
+    this.container.append(this.title);
+    this.container.append(this.search);
+    this.container.append(this.cardList);
+  }
 
-        this.cardList = this.createElement('ul', 'cards');
-
-
-        this.main.append(this.title);
-        this.main.append(this.searchLine);
-        this.main.append(this.wrapper);
-        this.main.append(this.cardList)
+  createElement(elementTag, elementClass) {
+    const element = document.createElement(elementTag);
+    if (elementClass) {
+      element.classList.add(elementClass);
     }
+    return element;
+  }
 
-    createElement (elementTag, elementClass) {
-        const element = document.createElement(elementTag);
-        if(elementClass) {
-            element.classList.add(elementClass);
-        }
-        return element;
-    }
+  createRepo(repoData) {
+    const searchElement = this.createElement("li", "search__item");
+    searchElement.addEventListener("click", () => this.createCard(repoData));
+    searchElement.addEventListener("click", () => this.clearInput());
+    searchElement.insertAdjacentHTML(
+      "beforeend",
+      `<div class= "search__name">${repoData.name}</div>`
+    );
+    this.searchList.append(searchElement);
+  }
 
-    createRepo (repoData) {
-        const reposElement = this.createElement('li', 'repos__item')
-        reposElement.addEventListener('click', () => this.createCard(repoData))
-        reposElement.insertAdjacentHTML('beforeend', `<div class= "repos__name">${repoData.name}</div>`);
-        this.reposList.append(reposElement);
-    }
+  clearInput() {
+    this.searchInput.value = "";
+    this.searchList.innerHTML = "";
+  }
 
-    createCard (id)  {
-        const card = this.createElement('li', 'cards__item');
-        this.api.loadReposData(id).then(res => {
-            console.log(res)
-            res.forEach((e) => {
-                card.insertAdjacentHTML('beforeend', `<div class= "card__info">${e}</div>`)
-            })
-        })
-        this.cardList.append(card)
-    }
+  createCard(id) {
+    const card = this.createElement("li", "cards__item");
+    this.api.loadReposData(id).then((res) => {
+      res.forEach((key, value) => {
+        card.insertAdjacentHTML(
+          "beforeend",
+          `<div class= "card__info">${value}:${key}</div>`
+        );
+      });
+    });
+    card.addEventListener("click", () => card.remove());
+    this.cardList.append(card);
+  }
 }
